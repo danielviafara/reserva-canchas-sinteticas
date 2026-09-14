@@ -5,7 +5,7 @@
 Aplicación para reservar canchas sintéticas por franjas horarias, pensada para
 evitar que dos personas terminen con el mismo turno de la misma cancha.
 
-> Proyecto académico — Universidad Manuela Beltrán · Arquitectura de Software · Quinto semestre.
+> Proyecto académico — Universidad Manuela Beltrán · Sistemas Transaccionales · Quinto semestre.
 
 ---
 
