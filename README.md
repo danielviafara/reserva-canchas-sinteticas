@@ -1,106 +1,106 @@
-# Sistema de Reserva de Canchas Sintéticas
+# GolTime — Sistema de Reserva de Canchas Sintéticas
 
-![Estado](https://img.shields.io/badge/estado-fase%202%20(BD%20%2B%20backend)-blue)
+![Estado](https://img.shields.io/badge/estado-interfaz%20%2B%20operaci%C3%B3n%20de%20reserva-brightgreen)
 
 Aplicación para reservar canchas sintéticas por franjas horarias, pensada para
 evitar que dos personas terminen con el mismo turno de la misma cancha.
 
-> Proyecto académico — Universidad Manuela Beltrán · Arquitectura de Software · Quinto semestre.
+> Proyecto académico — Universidad Manuela Beltrán · Sistemas Transaccionales · Quinto semestre.
 
 ---
 
-## ¿Qué problema resuelve?
+## Novedades de esta fase
 
-Hoy muchas canchas gestionan sus reservas por llamadas, mensajería o cuadernos.
-Cuando dos personas piden la misma franja casi al mismo tiempo, es fácil que
-ambas queden confirmadas y se produzca una **doble reserva**. Este sistema
-centraliza la disponibilidad para que eso no pase.
-
-## Objetivo
-
-Construir una aplicación que permita consultar la disponibilidad, reservar y
-cancelar turnos de forma confiable, garantizando que solo exista una reserva por
-cancha, fecha y franja.
-
-## ¿Qué podrá hacer el sistema?
-
-- Registrar clientes, canchas y horarios
-- Consultar la disponibilidad en tiempo real
-- Reservar por franja horaria
-- Cancelar una reserva y liberar el cupo
-- Consultar el historial de reservas
-- Generar reportes básicos de ocupación
+- **Interfaz mejorada** (React + Vite) con las pantallas principales: ingreso/registro,
+  disponibilidad (grilla de franjas) y mis reservas.
+- **Operación principal implementada:** consultar disponibilidad y **reservar una franja**,
+  con el control que impide la **doble reserva** (RF04 y RF05 del documento maestro).
+- **Gestión inicial de la información:** registro de usuarios, consulta y visualización de
+  reservas, cancelación que libera el cupo, validaciones de formulario y datos de prueba.
+- El backend corre **de inmediato con SQLite** y apunta a **SQL Server** con solo cambiar la
+  cadena de conexión.
 
 ## Tecnologías
 
-- **Aplicación:** React + Vite
-- **Servidor:** FastAPI (Python)
-- **Base de datos:** SQL Server
+- **Frontend:** React + Vite
+- **Backend:** FastAPI (Python) · SQLAlchemy
+- **Base de datos:** SQLite (desarrollo) / SQL Server (producción)
 - **Autenticación:** JWT
-- **Despliegue:** Vercel (app) y Docker (servidor)
 
-## Estructura del proyecto
+## Estructura
 
 ```
 reserva-canchas-sinteticas/
-├─ README.md
-├─ docs/            # documentación y propuesta visual
-├─ database/        # scripts de la base de datos (SQL Server)
-│  ├─ 01_create_database.sql
-│  ├─ 02_tables.sql
-│  └─ 03_seed.sql
-└─ backend/         # servidor (FastAPI)
-   ├─ app/
-   │  ├─ api/          # rutas y dependencias
-   │  ├─ core/         # configuración
-   │  ├─ db/           # conexión y modelos
-   │  ├─ schemas/      # (se completa más adelante)
-   │  ├─ services/     # (se completa más adelante)
-   │  └─ repositories/ # (se completa más adelante)
-   ├─ requirements.txt
-   ├─ .env.example
-   └─ Dockerfile
+├─ frontend/        # aplicación React + Vite
+│  └─ src/
+│     ├─ components/  (Auth, Navbar, Disponibilidad, MisReservas)
+│     ├─ api.js       (capa de acceso a la API)
+│     └─ styles.css
+├─ backend/         # API FastAPI por capas
+│  └─ app/
+│     ├─ api/          (rutas y dependencias)
+│     ├─ core/         (config, seguridad JWT)
+│     ├─ db/           (sesión, modelos, seed)
+│     ├─ schemas/      (validación Pydantic)
+│     ├─ repositories/ (acceso a datos)
+│     └─ services/     (lógica de reserva y autenticación)
+├─ database/        # scripts T-SQL para SQL Server
+└─ docs/            # documentación del proyecto
 ```
 
 ## Cómo ejecutar
 
-### 1. Base de datos
-
-Requiere **SQL Server**. Ejecutar los scripts de `database/` en orden
-(con `sqlcmd`, Azure Data Studio o SQL Server Management Studio):
-
-```bash
-sqlcmd -S localhost -U sa -P TuPassword_123 -i database/01_create_database.sql
-sqlcmd -S localhost -U sa -P TuPassword_123 -i database/02_tables.sql
-sqlcmd -S localhost -U sa -P TuPassword_123 -i database/03_seed.sql
-```
-
-Esto crea la base de datos `ReservaCanchas`, las tablas y algunos datos de prueba.
-
-### 2. Backend
-
-Requiere **Python 3.12** y el driver **ODBC Driver 18 for SQL Server**.
+### 1. Backend (API)
 
 ```bash
 cd backend
-cp .env.example .env           # ajusta la cadena de conexión
 python -m venv .venv
-source .venv/bin/activate       # Windows: .venv\Scripts\activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+cp .env.example .env                # usa SQLite por defecto
 uvicorn app.main:app --reload
 ```
 
-La API queda en `http://localhost:8000`. Para probar la conexión con la base de
-datos: `http://localhost:8000/health/db`.
+La API queda en `http://localhost:8000` (documentación interactiva en `/docs`).
+Al iniciar crea las tablas y carga datos de prueba (3 canchas, 4 franjas y 2 usuarios).
 
-## Estado del proyecto
+Usuarios de prueba:
+- Cliente — `daniel@correo.com` / `cliente123`
+- Administrador — `admin@goltime.com` / `admin123`
 
-- **Fase 1:** prototipo inicial y propuesta visual ✅
-- **Fase 2:** base de datos + estructura inicial del backend ✅
-- **Siguiente:** operaciones transaccionales (disponibilidad, reserva, cancelación)
+### 2. Frontend (aplicación)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+La aplicación queda en `http://localhost:5173` y habla con el backend a través de `/api`.
+
+### 3. Probar el control de concurrencia (opcional)
+
+Con el backend corriendo, en otra terminal:
+
+```bash
+cd backend
+python scripts/test_concurrencia.py
+```
+
+Dispara dos reservas sobre la misma franja a la vez y debe mostrar una confirmada (201)
+y una rechazada (409), evidenciando que no se produce la doble reserva.
+
+## Operación principal: reservar una franja
+
+1. El cliente inicia sesión y consulta la disponibilidad de una cancha para una fecha.
+2. Selecciona una franja libre y confirma.
+3. El backend verifica, dentro de una transacción, que la franja siga libre y la registra.
+4. Si otra persona la tomó primero, responde `409` y la aplicación vuelve a sincronizar la grilla.
+
+El invariante "una sola reserva confirmada por cancha, fecha y franja" se respalda con un
+índice único filtrado en la base de datos.
 
 ## Autor
 
-**Daniel Eduardo Viafara Guacaneme**
-Universidad Manuela Beltrán — Ingeniería de Software
+**Daniel Eduardo Viafara Guacaneme** — Universidad Manuela Beltrán, Ingeniería de Software.
 Docente: Jamilton Fernando Benavides · Bogotá D.C., 2026
