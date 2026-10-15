@@ -1,8 +1,9 @@
 fastapi
 uvicorn[standard]
 sqlalchemy
-pyodbc
+pydantic
 pydantic-settings
-python-dotenv
 python-jose[cryptography]
-passlib[bcrypt]
+passlib
+python-multipart
+# pyodbc  # solo para SQL Server (produccion)
