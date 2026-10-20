@@ -61,4 +61,5 @@ Index(
     unique=True,
     sqlite_where=text("Estado = 'confirmada'"),
     mssql_where=text("Estado = 'confirmada'"),
+    postgresql_where=text("\"Estado\" = 'confirmada'"),
 )
