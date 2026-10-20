@@ -17,14 +17,14 @@ evitar que dos personas terminen con el mismo turno de la misma cancha.
   con el control que impide la **doble reserva** (RF04 y RF05 del documento maestro).
 - **Gestión inicial de la información:** registro de usuarios, consulta y visualización de
   reservas, cancelación que libera el cupo, validaciones de formulario y datos de prueba.
-- El backend corre **de inmediato con SQLite** y apunta a **SQL Server** con solo cambiar la
-  cadena de conexión.
+- El backend corre sobre **PostgreSQL**; cambiar de motor (por ejemplo a SQLite para una
+  prueba rápida) es solo ajustar la cadena de conexión en el `.env`.
 
 ## Tecnologías
 
 - **Frontend:** React + Vite
 - **Backend:** FastAPI (Python) · SQLAlchemy
-- **Base de datos:** SQLite (desarrollo) / SQL Server (producción)
+- **Base de datos:** PostgreSQL
 - **Autenticación:** JWT
 
 ## Estructura
@@ -44,7 +44,7 @@ reserva-canchas-sinteticas/
 │     ├─ schemas/      (validación Pydantic)
 │     ├─ repositories/ (acceso a datos)
 │     └─ services/     (lógica de reserva y autenticación)
-├─ database/        # scripts T-SQL para SQL Server
+├─ database/        # scripts SQL de la base de datos
 └─ docs/            # documentación del proyecto
 ```
 
@@ -57,7 +57,7 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env                # usa SQLite por defecto
+cp .env.example .env                # ajusta la conexión a PostgreSQL
 uvicorn app.main:app --reload
 ```
 
