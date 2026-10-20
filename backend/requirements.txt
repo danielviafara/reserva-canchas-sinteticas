@@ -6,4 +6,6 @@ pydantic-settings
 python-jose[cryptography]
 passlib
 python-multipart
+psycopg2-binary
+email-validator
 # pyodbc  # solo para SQL Server (produccion)
