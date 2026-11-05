@@ -67,3 +67,18 @@ select,input{background:var(--sunk);border:1px solid var(--line);color:var(--cha
 .msg.ok{background:rgba(49,176,111,.12);color:var(--turf-b)}
 .hint{color:var(--muted);font-size:12px;margin-top:10px;text-align:center}
 .empty{color:var(--muted);text-align:center;padding:30px}
+
+/* modal de reserva */
+.modal-fondo{position:fixed;inset:0;background:rgba(5,12,8,.66);display:flex;
+  align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal{max-width:420px;width:100%;margin:0}
+.modal .field input{width:100%}
+
+/* recomendaciones en el formulario de reserva */
+.reco{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.reco-t{font-size:13px;color:var(--turf-b);font-weight:700;margin-bottom:6px}
+.reco ul{margin:0;padding-left:18px}
+.reco li{font-size:13px;color:var(--muted);margin-bottom:4px;line-height:1.45}
+
+/* estado de reserva ya cumplida */
+.badge.finalizada{background:rgba(157,181,168,.14);color:var(--muted)}
