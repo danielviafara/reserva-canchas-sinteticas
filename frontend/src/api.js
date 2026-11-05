@@ -17,7 +17,7 @@ export const api = {
   login: (email, password) => req('/auth/login', { method: 'POST', body: { email, password } }),
   canchas: () => req('/canchas'),
   disponibilidad: (cancha_id, fecha) => req(`/disponibilidad?cancha_id=${cancha_id}&fecha=${fecha}`),
-  reservar: (cancha_id, franja_id, fecha) => req('/reservas', { method: 'POST', auth: true, body: { cancha_id, franja_id, fecha } }),
+  reservar: (cancha_id, franja_id, fecha, contacto = {}) => req('/reservas', { method: 'POST', auth: true, body: { cancha_id, franja_id, fecha, ...contacto } }),
   misReservas: () => req('/reservas', { auth: true }),
   cancelar: (id) => req(`/reservas/${id}/cancelar`, { method: 'POST', auth: true }),
 }

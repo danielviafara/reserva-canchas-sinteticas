@@ -48,6 +48,9 @@ class Reserva(Base):
     Estado = Column(String(20), nullable=False, default="confirmada")  # confirmada | cancelada
     CreadaEn = Column(DateTime, server_default=func.now())
     CanceladaEn = Column(DateTime)
+    NombreContacto = Column(String(120))
+    Celular = Column(String(30))
+    CorreoContacto = Column(String(256))
     cancha = relationship("Cancha", back_populates="reservas")
     franja = relationship("Franja", back_populates="reservas")
     usuario = relationship("Usuario", back_populates="reservas")
