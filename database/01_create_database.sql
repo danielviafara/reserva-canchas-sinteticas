@@ -1,11 +1,11 @@
 /* =====================================================================
-   Fase 2 - Creacion de la base de datos
-   Sistema de Reserva de Canchas Sinteticas
+   Creacion de la base de datos - PostgreSQL
+   Sistema de Reserva de Canchas Sinteticas (GolTime)
+   Ejecutar conectado a la base 'postgres'. Si 'goltime' ya existe, omita
+   el CREATE DATABASE y pase directo a conectarse.
    ===================================================================== */
 
-IF DB_ID('ReservaCanchas') IS NULL
-    CREATE DATABASE ReservaCanchas;
-GO
+CREATE DATABASE goltime;
 
-USE ReservaCanchas;
-GO
+-- Conectarse a la base recien creada (meta-comando de psql):
+\c goltime
