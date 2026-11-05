@@ -9,16 +9,18 @@ evitar que dos personas terminen con el mismo turno de la misma cancha.
 
 ---
 
-## Novedades de esta fase
+## Novedades de esta fase (Fase 4)
 
-- **Interfaz mejorada** (React + Vite) con las pantallas principales: ingreso/registro,
-  disponibilidad (grilla de franjas) y mis reservas.
-- **Operación principal implementada:** consultar disponibilidad y **reservar una franja**,
-  con el control que impide la **doble reserva** (RF04 y RF05 del documento maestro).
-- **Gestión inicial de la información:** registro de usuarios, consulta y visualización de
-  reservas, cancelación que libera el cupo, validaciones de formulario y datos de prueba.
-- El backend corre sobre **PostgreSQL**; cambiar de motor (por ejemplo a SQLite para una
-  prueba rápida) es solo ajustar la cadena de conexión en el `.env`.
+- **Diseño y navegabilidad de la interfaz** (React + Vite): menú principal con navegación
+  entre Disponibilidad y Mis reservas, estados activos, y mensajes claros de éxito y error.
+- **Integración con la base de datos consolidada en PostgreSQL:** registro de usuarios,
+  consulta y visualización de reservas desde la aplicación, con validación de los datos
+  antes de enviarlos y manejo básico de errores de conexión y de operación.
+- **Operación principal:** consultar disponibilidad y **reservar una franja**, con el control
+  que impide la **doble reserva** (RF04 y RF05 del documento maestro).
+- **Scripts SQL actualizados a PostgreSQL** en `database/`, acordes con el esquema real.
+- La configuración sensible (conexión y clave JWT) se maneja por variables de entorno en un
+  `.env` local excluido de Git.
 
 ## Tecnologías
 
@@ -89,6 +91,21 @@ python scripts/test_concurrencia.py
 
 Dispara dos reservas sobre la misma franja a la vez y debe mostrar una confirmada (201)
 y una rechazada (409), evidenciando que no se produce la doble reserva.
+
+## Base de datos
+
+Al iniciar, el backend crea las tablas automáticamente desde los modelos (SQLAlchemy) y
+carga datos de prueba. Como evidencia del modelo relacional, en `database/` están los
+scripts SQL equivalentes para **PostgreSQL**:
+
+```bash
+psql -U usuario -d postgres -f database/01_create_database.sql
+psql -U usuario -d goltime  -f database/02_tables.sql
+psql -U usuario -d goltime  -f database/03_seed.sql
+```
+
+Para **evidenciar las transacciones** en consola (BEGIN, INSERT, COMMIT, ROLLBACK), basta
+con poner `SQL_ECHO=true` en el `.env` y reiniciar el backend.
 
 ## Operación principal: reservar una franja
 
