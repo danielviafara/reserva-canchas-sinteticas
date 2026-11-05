@@ -54,7 +54,8 @@ class Reserva(Base):
 
 
 # INVARIANTE DEL SISTEMA: una sola reserva 'confirmada' por (cancha, fecha, franja).
-# Indice unico filtrado; funciona en SQLite (sqlite_where) y SQL Server (mssql_where).
+# Indice unico filtrado; funciona en PostgreSQL (postgresql_where), ademas de
+# SQLite (sqlite_where) y SQL Server (mssql_where).
 Index(
     "UX_Reserva_Slot_Confirmada",
     Reserva.CanchaId, Reserva.Fecha, Reserva.FranjaId,
