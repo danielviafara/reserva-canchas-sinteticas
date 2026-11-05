@@ -18,7 +18,9 @@ def mis_reservas(db: Session = Depends(get_db), user=Depends(get_current_user)):
 @router.post("", status_code=status.HTTP_201_CREATED)
 def reservar(datos: ReservaIn, db: Session = Depends(get_db), user=Depends(get_current_user)):
     r = reserva_service.crear_reserva(db, user["usuario_id"], datos.cancha_id,
-                                      datos.franja_id, datos.fecha)
+                                      datos.franja_id, datos.fecha,
+                                      datos.nombre_contacto, datos.celular,
+                                      datos.correo_contacto)
     return reserva_service.serializar(db, r)
 
 

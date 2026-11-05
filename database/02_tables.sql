@@ -62,6 +62,9 @@ CREATE TABLE "Reserva" (
     "Estado"      VARCHAR(20) NOT NULL DEFAULT 'confirmada',
     "CreadaEn"    TIMESTAMP   NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
     "CanceladaEn" TIMESTAMP,
+    "NombreContacto" VARCHAR(120),
+    "Celular"        VARCHAR(30),
+    "CorreoContacto" VARCHAR(256),
     CONSTRAINT "CK_Reserva_Estado" CHECK ("Estado" IN ('confirmada','cancelada'))
 );
 

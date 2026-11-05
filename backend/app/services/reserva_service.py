@@ -34,7 +34,8 @@ def consultar_disponibilidad(db: Session, cancha_id: int, fecha: date):
     return salida
 
 
-def crear_reserva(db: Session, usuario_id: int, cancha_id: int, franja_id: int, fecha: date):
+def crear_reserva(db: Session, usuario_id: int, cancha_id: int, franja_id: int, fecha: date,
+                  nombre_contacto: str = None, celular: str = None, correo_contacto: str = None):
     if not db.get(models.Cancha, cancha_id):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "La cancha no existe")
     if not db.get(models.Franja, franja_id):
@@ -45,7 +46,9 @@ def crear_reserva(db: Session, usuario_id: int, cancha_id: int, franja_id: int, 
         raise HTTPException(status.HTTP_409_CONFLICT, "La franja ya fue reservada")
 
     reserva = models.Reserva(CanchaId=cancha_id, FranjaId=franja_id, Fecha=fecha,
-                             UsuarioId=usuario_id, Estado="confirmada")
+                             UsuarioId=usuario_id, Estado="confirmada",
+                             NombreContacto=nombre_contacto, Celular=celular,
+                             CorreoContacto=correo_contacto)
     db.add(reserva)
     try:
         db.commit()
@@ -77,4 +80,7 @@ def serializar(db: Session, r: models.Reserva) -> dict:
         "hora_inicio": _hhmm(r.franja.HoraInicio),
         "hora_fin": _hhmm(r.franja.HoraFin),
         "estado": r.Estado,
+        "nombre_contacto": r.NombreContacto,
+        "celular": r.Celular,
+        "correo_contacto": r.CorreoContacto,
     }
