@@ -23,3 +23,9 @@ def get_current_user(cred: HTTPAuthorizationCredentials = Depends(bearer)) -> di
     if not datos:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Token invalido o expirado")
     return {"usuario_id": int(datos["sub"]), "rol": datos.get("rol")}
+
+
+def get_current_admin(user: dict = Depends(get_current_user)) -> dict:
+    if user.get("rol") != "admin":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Requiere rol de administrador")
+    return user

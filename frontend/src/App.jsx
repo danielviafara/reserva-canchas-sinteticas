@@ -3,6 +3,7 @@ import Auth from './components/Auth.jsx'
 import Navbar from './components/Navbar.jsx'
 import Disponibilidad from './components/Disponibilidad.jsx'
 import MisReservas from './components/MisReservas.jsx'
+import Admin from './components/Admin.jsx'
 
 function leerUsuario() {
   try { return JSON.parse(localStorage.getItem('goltime_user')) } catch { return null }
@@ -12,7 +13,7 @@ export default function App() {
   const [usuario, setUsuario] = useState(leerUsuario())
   const [vista, setVista] = useState('disponibilidad')
 
-  function onLogin(u) { localStorage.setItem('goltime_user', JSON.stringify(u)); setUsuario(u) }
+  function onLogin(u) { localStorage.setItem('goltime_user', JSON.stringify(u)); setUsuario(u); setVista('disponibilidad') }
   function onLogout() { localStorage.removeItem('goltime_token'); localStorage.removeItem('goltime_user'); setUsuario(null) }
 
   if (!usuario) return <div className="container"><Auth onLogin={onLogin} /></div>
@@ -20,7 +21,9 @@ export default function App() {
   return (
     <div className="container">
       <Navbar usuario={usuario} vista={vista} setVista={setVista} onLogout={onLogout} />
-      {vista === 'disponibilidad' ? <Disponibilidad /> : <MisReservas />}
+      {vista === 'disponibilidad' && <Disponibilidad />}
+      {vista === 'mis' && <MisReservas />}
+      {vista === 'admin' && usuario.rol === 'admin' && <Admin />}
     </div>
   )
 }

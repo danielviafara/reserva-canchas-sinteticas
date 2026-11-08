@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { api } from '../api'
+import Icon from './Icon.jsx'
 
 export default function Auth({ onLogin }) {
   const [modo, setModo] = useState('login')
@@ -25,38 +26,34 @@ export default function Auth({ onLogin }) {
 
   return (
     <div className="auth-wrap">
-      <div className="brand" style={{ textAlign: 'center', fontSize: 28, marginBottom: 6 }}>Gol<span>Time</span></div>
-      <p className="sub" style={{ textAlign: 'center' }}>Reserva de canchas sintéticas</p>
+      <div className="auth-brand">
+        <div className="brand"><span className="mark"><Icon name="pitch" size={22} /></span>Gol<em>Time</em></div>
+        <p>Reserva tu cancha sintética bajo las luces.</p>
+      </div>
       <div className="panel">
-        <h2>{modo === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}</h2>
-        <p className="sub">{modo === 'login' ? 'Ingresa para reservar tu cancha.' : 'Regístrate para empezar a reservar.'}</p>
+        <h2>{modo === 'login' ? 'Inicia sesión' : 'Crea tu cuenta'}</h2>
+        <p className="sub">{modo === 'login' ? 'Entra para reservar tu turno.' : 'Regístrate para empezar a reservar.'}</p>
         <form onSubmit={enviar}>
           {modo === 'registro' && (
-            <div className="field">
-              <label>Nombre</label>
-              <input value={nombre} onChange={e => setNombre(e.target.value)} required minLength={2} />
-            </div>
+            <div className="field"><label>Nombre</label>
+              <input value={nombre} onChange={e => setNombre(e.target.value)} required minLength={2} /></div>
           )}
-          <div className="field">
-            <label>Correo</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-          </div>
-          <div className="field">
-            <label>Contraseña</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
-          </div>
-          <button className="btn" style={{ width: '100%' }} disabled={cargando}>
-            {cargando ? 'Procesando...' : (modo === 'login' ? 'Entrar' : 'Registrarme')}
+          <div className="field"><label>Correo</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></div>
+          <div className="field"><label>Contraseña</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} /></div>
+          <button className="btn block" disabled={cargando}>
+            {cargando ? 'Procesando…' : (modo === 'login' ? 'Entrar' : 'Crear cuenta')}
           </button>
         </form>
         {err && <div className="msg err">{err}</div>}
         <div className="switch">
           {modo === 'login' ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}{' '}
           <button onClick={() => { setErr(''); setModo(modo === 'login' ? 'registro' : 'login') }}>
-            {modo === 'login' ? 'Crear una' : 'Iniciar sesión'}
+            {modo === 'login' ? 'Crear una' : 'Inicia sesión'}
           </button>
         </div>
-        {modo === 'login' && <div className="hint">Demo: daniel@correo.com · cliente123</div>}
+        {modo === 'login' && <div className="hint">Demo · daniel@correo.com / cliente123</div>}
       </div>
     </div>
   )

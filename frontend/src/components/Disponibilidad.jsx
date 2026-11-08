@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../api'
+import Icon from './Icon.jsx'
 
 const hoy = () => new Date().toISOString().slice(0, 10)
 
@@ -14,7 +15,7 @@ export default function Disponibilidad() {
   const [franjas, setFranjas] = useState([])
   const [msg, setMsg] = useState(null)
   const [cargando, setCargando] = useState(false)
-  const [seleccion, setSeleccion] = useState(null)   // franja elegida para reservar
+  const [seleccion, setSeleccion] = useState(null)
   const [datos, setDatos] = useState({ nombre_contacto: '', celular: '', correo_contacto: '' })
   const [enviando, setEnviando] = useState(false)
 
@@ -49,17 +50,21 @@ export default function Disponibilidad() {
     }
     setSeleccion(null)
     setEnviando(false)
-    await cargar()        // refresca la grilla (cargar() limpia el mensaje)
-    setMsg(resultado)     // mostramos el resultado DESPUES de refrescar, para que no se borre
+    await cargar()
+    setMsg(resultado)
   }
 
   const nombreCancha = canchas.find(c => String(c.cancha_id) === String(canchaId))?.nombre
 
   return (
-    <div className="panel">
-      <h2>Consultar disponibilidad</h2>
-      <p className="sub">Elige una cancha y una fecha. Las franjas en verde están libres.</p>
-      <div className="row">
+    <section className="screen">
+      <header className="screen-head">
+        <span className="eyebrow"><Icon name="bolt" size={15} />Reserva tu turno</span>
+        <h1>Encuentra una cancha <span className="hl">libre</span> bajo las luces</h1>
+        <p className="lead">Elige una cancha y una fecha. Las franjas en verde están disponibles para reservar al instante.</p>
+      </header>
+
+      <div className="controls">
         <div>
           <label>Cancha</label>
           <select value={canchaId} onChange={e => setCanchaId(e.target.value)}>
@@ -72,17 +77,17 @@ export default function Disponibilidad() {
         </div>
       </div>
 
-      {msg && <div className={'msg ' + msg.t}>{msg.m}</div>}
+      {msg && <div className={'msg ' + msg.t} style={{ marginTop: 14 }}>{msg.m}</div>}
 
-      {cargando ? <div className="empty">Cargando...</div> : (
-        <div className="grid">
+      {cargando ? <div className="empty">Cargando disponibilidad…</div> : (
+        <div className="board">
           {franjas.map(f => (
-            <div key={f.franja_id}
-                 className={'slot ' + f.estado}
-                 onClick={() => f.estado === 'libre' && abrirFormulario(f)}>
-              <div className="h">{f.hora_inicio} – {f.hora_fin}</div>
-              <div className="s">{f.estado === 'libre' ? 'Libre · reservar' : 'Ocupada'}</div>
-            </div>
+            <button key={f.franja_id}
+              className={'slot ' + (f.estado === 'libre' ? 'free' : 'taken')}
+              onClick={() => f.estado === 'libre' && abrirFormulario(f)}>
+              <span className="st"><Icon name={f.estado === 'libre' ? 'check' : 'x'} size={14} />{f.estado === 'libre' ? 'Disponible' : 'Reservada'}</span>
+              <span className="time">{f.hora_inicio} <i>– {f.hora_fin}</i></span>
+            </button>
           ))}
         </div>
       )}
@@ -104,27 +109,27 @@ export default function Disponibilidad() {
             <div className="field">
               <label>Nombre completo</label>
               <input value={datos.nombre_contacto} required minLength={3}
-                     onChange={e => setDatos({ ...datos, nombre_contacto: e.target.value })} />
+                onChange={e => setDatos({ ...datos, nombre_contacto: e.target.value })} />
             </div>
             <div className="field">
               <label>Número de celular</label>
               <input value={datos.celular} required minLength={7} inputMode="tel" placeholder="3001234567"
-                     onChange={e => setDatos({ ...datos, celular: e.target.value })} />
+                onChange={e => setDatos({ ...datos, celular: e.target.value })} />
             </div>
             <div className="field">
               <label>Correo electrónico</label>
               <input type="email" value={datos.correo_contacto} required
-                     onChange={e => setDatos({ ...datos, correo_contacto: e.target.value })} />
+                onChange={e => setDatos({ ...datos, correo_contacto: e.target.value })} />
             </div>
             <div className="row" style={{ marginTop: 10 }}>
               <button className="btn" type="submit" disabled={enviando}>
-                {enviando ? 'Reservando...' : 'Confirmar reserva'}
+                <Icon name="check" size={16} />{enviando ? 'Reservando…' : 'Confirmar reserva'}
               </button>
               <button className="btn ghost" type="button" onClick={() => setSeleccion(null)} disabled={enviando}>Cancelar</button>
             </div>
           </form>
         </div>
       )}
-    </div>
+    </section>
   )
 }

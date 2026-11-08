@@ -20,4 +20,14 @@ export const api = {
   reservar: (cancha_id, franja_id, fecha, contacto = {}) => req('/reservas', { method: 'POST', auth: true, body: { cancha_id, franja_id, fecha, ...contacto } }),
   misReservas: () => req('/reservas', { auth: true }),
   cancelar: (id) => req(`/reservas/${id}/cancelar`, { method: 'POST', auth: true }),
+
+  // administración
+  adminReservas: () => req('/admin/reservas', { auth: true }),
+  adminCancelar: (id) => req(`/admin/reservas/${id}/cancelar`, { method: 'POST', auth: true }),
+  adminCanchas: () => req('/admin/canchas', { auth: true }),
+  crearCancha: (nombre, superficie) => req('/admin/canchas', { method: 'POST', auth: true, body: { nombre, superficie } }),
+  toggleCancha: (id) => req(`/admin/canchas/${id}/toggle`, { method: 'PATCH', auth: true }),
+  adminFranjas: () => req('/admin/franjas', { auth: true }),
+  crearFranja: (hora_inicio, hora_fin) => req('/admin/franjas', { method: 'POST', auth: true, body: { hora_inicio, hora_fin } }),
+  toggleFranja: (id) => req(`/admin/franjas/${id}/toggle`, { method: 'PATCH', auth: true }),
 }
