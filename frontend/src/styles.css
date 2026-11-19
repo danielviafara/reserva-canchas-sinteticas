@@ -375,6 +375,28 @@ tr:hover td{background:rgba(242,244,239,.02)}
 .li .grow b{display:block;font-family:var(--display);font-weight:800;font-size:20px;text-transform:uppercase;line-height:1.05}
 .li .grow span{font-size:13px;color:var(--mute)}
 
+/* perfil del jugador */
+.profile-hero{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.seg-badge{width:84px;height:84px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--volt);color:var(--volt-ink);box-shadow:0 0 0 8px rgba(212,255,58,.1)}
+.pattern-quote{flex:1 1 320px;padding:16px 18px;border-left:3px solid var(--volt);background:rgba(242,244,239,.03);border-radius:0 var(--r) var(--r) 0}
+.pattern-quote p{margin:6px 0 0;font-size:16px;line-height:1.45;color:var(--chalk)}
+.heat-cell.zero{background:rgba(242,244,239,.03)}
+.demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.demo-chip{text-align:left;padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--line-2);background:var(--surface);cursor:pointer;transition:.2s}
+.demo-chip:hover{border-color:var(--volt)}
+.demo-chip b{display:block;font-size:14px;color:var(--chalk)}
+.demo-chip span{font-family:var(--cond);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--volt)}
+tr.click{cursor:pointer}
+tr.sel td{background:rgba(212,255,58,.06)}
+.dist{display:grid;gap:8px}
+.dist-row{display:grid;grid-template-columns:70px 1fr 60px;gap:10px;align-items:center;font-size:13px}
+.dist-row .bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;display:flex}
+.dist-row .bar i{display:block;height:100%}
+.dict{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.dict div{padding:10px 12px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);font-size:13px;color:var(--mute)}
+.dict code{display:inline-block;margin-bottom:4px}
+.tag-demo{font-family:var(--cond);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--volt-ink);background:var(--volt);padding:2px 7px;border-radius:999px;margin-left:8px;vertical-align:middle}
+
 /* ------------------------------------------------------------ acceso */
 .auth{min-height:100vh;display:grid;grid-template-columns:1.15fr 1fr}
 .auth-art{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:40px;

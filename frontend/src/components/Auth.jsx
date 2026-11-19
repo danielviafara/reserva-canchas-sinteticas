@@ -3,6 +3,16 @@ import { api } from '../api'
 import Icon from './Icon.jsx'
 import { Wordmark } from './Navbar.jsx'
 
+// Cuentas generadas por backend/scripts/generar_dataset.py (contrasena demo1234).
+const DEMOS = [
+  ['Daniel', 'Fiel entre semana', 'daniel@correo.com', 'cliente123'],
+  ['Laura', 'Fin de semana', 'laura@demo.goltime.co', 'demo1234'],
+  ['Andrés', 'En riesgo', 'andres@demo.goltime.co', 'demo1234'],
+  ['Camila', 'Ocasional', 'camila@demo.goltime.co', 'demo1234'],
+  ['Julián', 'Cupos libres', 'julian@demo.goltime.co', 'demo1234'],
+  ['Admin', 'Administrador', 'admin@goltime.com', 'admin123'],
+]
+
 export default function Auth({ onLogin }) {
   const [modo, setModo] = useState('login')
   const [nombre, setNombre] = useState('')
@@ -64,9 +74,12 @@ export default function Auth({ onLogin }) {
 
           {modo === 'login' && (
             <div className="demo">
-              Cuentas de demostración:{' '}
-              <button type="button" onClick={() => demo('daniel@correo.com', 'cliente123')}>Jugador</button>{' · '}
-              <button type="button" onClick={() => demo('admin@goltime.com', 'admin123')}>Administrador</button>
+              Perfiles de demostración (cada uno con un patrón de juego distinto):
+              <div className="demo-grid">
+                {DEMOS.map(([n, rol, e, p]) => (
+                  <button key={e} type="button" className="demo-chip" onClick={() => demo(e, p)}><b>{n}</b><span>{rol}</span></button>
+                ))}
+              </div>
             </div>
           )}
         </div>

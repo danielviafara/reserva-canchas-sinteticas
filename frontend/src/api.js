@@ -25,6 +25,17 @@ export const api = {
   demanda: (cancha_id, fecha) => req(`/ia/demanda?cancha_id=${cancha_id}&fecha=${fecha}`),
   recomendaciones: () => req('/ia/recomendaciones', { auth: true }),
   adminIA: () => req('/admin/ia', { auth: true }),
+  miPerfil: () => req('/ia/mi-perfil', { auth: true }),
+  adminClientes: () => req('/admin/ia/clientes', { auth: true }),
+  adminCliente: (id) => req(`/admin/ia/clientes/${id}`, { auth: true }),
+  adminDataset: () => req('/admin/ia/dataset', { auth: true }),
+  async descargarDataset() {
+    const res = await fetch(BASE + '/admin/ia/dataset.csv', { headers: { Authorization: 'Bearer ' + token() } })
+    if (!res.ok) throw { status: res.status, detail: 'No se pudo descargar' }
+    const url = URL.createObjectURL(await res.blob())
+    const a = Object.assign(document.createElement('a'), { href: url, download: 'goltime_dataset.csv' })
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)
+  },
 
   // administración
   adminReservas: () => req('/admin/reservas', { auth: true }),

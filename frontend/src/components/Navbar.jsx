@@ -10,7 +10,7 @@ export default function Navbar({ usuario, vista, setVista, onLogout }) {
   const esAdmin = usuario.rol === 'admin'
   const items = [
     ['disponibilidad', 'calendar', 'Reservar'],
-    ...(esAdmin ? [['admin', 'shield', 'Administración']] : [['mis', 'ticket', 'Mis reservas']]),
+    ...(esAdmin ? [['admin', 'shield', 'Administración']] : [['mis', 'ticket', 'Mis reservas'], ['juego', 'brain', 'Mi juego']]),
   ]
   return (
     <header className="topbar">

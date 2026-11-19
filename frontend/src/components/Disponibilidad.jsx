@@ -10,7 +10,7 @@ const REGLAS = [
   ['boot', 'Usa guayos de césped sintético (multitaco o turf). Nada de tacos de aluminio.'],
 ]
 
-export default function Disponibilidad({ usuario, irAMis }) {
+export default function Disponibilidad({ usuario, irAMis, sugerencia, limpiarSugerencia }) {
   const [canchas, setCanchas] = useState([])
   const [canchaId, setCanchaId] = useState('')
   const [fecha, setFecha] = useState(hoy())
@@ -30,6 +30,11 @@ export default function Disponibilidad({ usuario, irAMis }) {
       .catch(() => setMsg({ t: 'err', m: 'No hay conexión con el servidor.' }))
     cargarSugerencias()
   }, [])
+
+  // Si se llego desde "Mi juego" con una sugerencia, abrir directamente esa franja.
+  useEffect(() => {
+    if (sugerencia && canchas.length) { usarSugerencia(sugerencia); limpiarSugerencia?.() }
+  }, [sugerencia, canchas])
 
   function cargarSugerencias() { api.recomendaciones().then(setSugerencias).catch(() => setSugerencias({ items: [] })) }
 

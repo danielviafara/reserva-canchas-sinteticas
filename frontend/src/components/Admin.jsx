@@ -2,9 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { api } from '../api'
 import Icon from './Icon.jsx'
 import AdminIA from './AdminIA.jsx'
+import { AdminClientes, AdminDataset } from './AdminDatos.jsx'
 
 const SECCIONES = [
   ['ia', 'spark', 'Inteligencia'],
+  ['clientes', 'users', 'Clientes'],
+  ['dataset', 'layers', 'Dataset'],
   ['reservas', 'ticket', 'Reservas'],
   ['canchas', 'pitch', 'Canchas'],
   ['franjas', 'clock', 'Franjas'],
@@ -28,6 +31,8 @@ export default function Admin() {
       </div>
       <div style={{ marginTop: 26 }}>
         {seccion === 'ia' && <AdminIA />}
+        {seccion === 'clientes' && <AdminClientes />}
+        {seccion === 'dataset' && <AdminDataset />}
         {seccion === 'reservas' && <AdminReservas />}
         {seccion === 'canchas' && <AdminCanchas />}
         {seccion === 'franjas' && <AdminFranjas />}

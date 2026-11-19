@@ -4,6 +4,7 @@ import Navbar from './components/Navbar.jsx'
 import Disponibilidad from './components/Disponibilidad.jsx'
 import MisReservas from './components/MisReservas.jsx'
 import Admin from './components/Admin.jsx'
+import MiJuego from './components/MiJuego.jsx'
 
 function leerUsuario() {
   try { return JSON.parse(localStorage.getItem('goltime_user')) } catch { return null }
@@ -12,6 +13,7 @@ function leerUsuario() {
 export default function App() {
   const [usuario, setUsuario] = useState(leerUsuario())
   const [vista, setVista] = useState(() => (leerUsuario()?.rol === 'admin' ? 'admin' : 'disponibilidad'))
+  const [pendiente, setPendiente] = useState(null) // sugerencia elegida en "Mi juego"
 
   function onLogin(u) {
     localStorage.setItem('goltime_user', JSON.stringify(u)); setUsuario(u)
@@ -24,8 +26,9 @@ export default function App() {
   return (
     <div className="shell">
       <Navbar usuario={usuario} vista={vista} setVista={setVista} onLogout={onLogout} />
-      {vista === 'disponibilidad' && <Disponibilidad usuario={usuario} irAMis={() => setVista('mis')} />}
+      {vista === 'disponibilidad' && <Disponibilidad usuario={usuario} irAMis={() => setVista('mis')} sugerencia={pendiente} limpiarSugerencia={() => setPendiente(null)} />}
       {vista === 'mis' && <MisReservas irAReservar={() => setVista('disponibilidad')} />}
+      {vista === 'juego' && <MiJuego irAReservar={(s) => { setPendiente(s || null); setVista('disponibilidad') }} />}
       {vista === 'admin' && usuario.rol === 'admin' && <Admin />}
     </div>
   )

@@ -128,9 +128,9 @@ export default function AdminIA() {
             })}
           </div>
           <div className="kpis" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
-            <MiniKpi k="Exactitud" v={pct(m.exactitud) + '%'} s={`vs ${pct(m.exactitud_base)}% base`} />
+            <MiniKpi k="Detecta" v={(m.lift ?? '—') + '×'} s={`El 20 % más riesgoso cancela ${pct(m.tasa_top20)} % vs ${pct(m.tasa_prueba)} % promedio`} />
             <MiniKpi k="AUC" v={m.auc ?? '—'} s="0,5 = azar · 1 = perfecto" />
-            <MiniKpi k="Prueba" v={m.registros_prueba} s={`de ${m.registros_entrenamiento + m.registros_prueba} reservas`} />
+            <MiniKpi k="Exactitud" v={pct(m.exactitud) + '%'} s={`vs ${pct(m.exactitud_base)} % de la línea base · ${m.registros_prueba} de prueba`} />
           </div>
         </div>
       </div>

@@ -34,7 +34,35 @@ PostgreSQL (Python puro, sin librerías extra) y se reentrena solo cuando cambia
 | Tipos de jugador | K-means (k = 4) sobre frecuencia, cancelación, fin de semana, antelación y regularidad | Admin → Inteligencia |
 | Recomendaciones | `afinidad × √(1 − demanda)` | Bloque «Hecho a tu medida» del jugador |
 
-Endpoints: `GET /ia/demanda`, `GET /ia/recomendaciones` (jugador) y `GET /admin/ia` (admin).
+Endpoints: `GET /ia/demanda`, `GET /ia/recomendaciones`, `GET /ia/mi-perfil` (jugador) y
+`GET /admin/ia`, `/admin/ia/clientes`, `/admin/ia/clientes/{id}`, `/admin/ia/dataset`, `/admin/ia/dataset.csv` (admin).
+
+### Perfiles de demostración
+
+Cada uno tiene ~6 meses de historia con un patrón distinto. Al entrar con uno, la pestaña
+**Mi juego** muestra lo que la IA reconoce (tipo de jugador, mapa de juego, combinaciones
+favoritas, riesgo del próximo partido) y le recomienda en consecuencia. El admin ve lo mismo
+de cualquier cliente en **Administración → Clientes**, y el dataset completo en **→ Dataset**.
+
+| Perfil | Correo | Contraseña | Patrón | Tipo que asigna la IA |
+|---|---|---|---|---|
+| Daniel | `daniel@correo.com` | `cliente123` | Martes y jueves 20:00, Cancha 1 | Fieles |
+| Laura | `laura@demo.goltime.co` | `demo1234` | Sábado 19:00 y domingo 18:00, Cancha 2 | Fin de semana |
+| Andrés | `andres@demo.goltime.co` | `demo1234` | Reserva mucho, con antelación, y cancela ~45 % | En riesgo |
+| Camila | `camila@demo.goltime.co` | `demo1234` | Pocas reservas, sin día fijo | Ocasionales |
+| Julián | `julian@demo.goltime.co` | `demo1234` | Lunes y martes 18:00 (horas flojas), Cancha 3 | Fieles |
+
+### Pruebas
+
+```bash
+cd backend
+python -m unittest tests.test_ia -v
+```
+
+17 pruebas sobre una base SQLite temporal (no tocan PostgreSQL): que el dataset respete la
+regla de no doble reserva, que la IA reconozca el tipo y la rutina de cada perfil demo y le
+recomiende su franja habitual, que los modelos aprendan la hora pico y los factores de
+cancelación, y que la API proteja las rutas de admin y rechace la doble reserva.
 
 ### Dataset ficticio
 
