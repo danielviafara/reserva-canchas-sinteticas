@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { api } from '../api'
 import Icon from './Icon.jsx'
+import Silueta from './Silueta.jsx'
 import { DIAS, MESES, parse, yaPaso } from '../utils'
 
 function faltan(r) {
@@ -46,7 +47,8 @@ export default function MisReservas({ irAReservar }) {
 
   return (
     <section>
-      <div className="page-head">
+      <div className="page-head page-head-sil">
+        <Silueta name="duelo" className="deco" style={{ width: 240 }} />
         <div>
           <span className="kicker">Tu temporada</span>
           <h1 className="display h-lg" style={{ marginTop: 12 }}>Mis reservas</h1>
@@ -73,7 +75,7 @@ export default function MisReservas({ irAReservar }) {
         <div className="bookings">{[0, 1].map(i => <div key={i} className="skeleton" style={{ minHeight: 90 }} />)}</div>
       ) : !lista.length ? (
         <div className="block"><div className="empty">
-          <Icon name={tab === 'proximas' ? 'ball' : 'clock'} size={38} />
+          <Silueta name={tab === 'proximas' ? 'remate' : 'celebracionEspalda'} />
           {tab === 'proximas' ? 'No tienes partidos agendados. ¿Armamos uno?' : 'Aún no tienes historial.'}
           {tab === 'proximas' && <button className="btn sm" onClick={irAReservar}>Reservar cancha<Icon name="arrow" size={15} className="go" /></button>}
         </div></div>

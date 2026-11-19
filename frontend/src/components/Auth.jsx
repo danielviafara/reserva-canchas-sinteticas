@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { api } from '../api'
 import Icon from './Icon.jsx'
 import { Wordmark } from './Navbar.jsx'
+import Silueta from './Silueta.jsx'
 
 // Cuentas generadas por backend/scripts/generar_dataset.py (contrasena demo1234).
 const DEMOS = [
@@ -37,9 +38,10 @@ export default function Auth({ onLogin }) {
 
   return (
     <div className="auth">
-      <aside className="auth-art" style={{ '--auth-img': 'url(/img/auth.jpg)' }}>
+      <aside className="auth-art">
+        <Silueta name="cabezazo" className="auth-sil" />
         <Wordmark />
-        <div>
+        <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="kicker">Canchas sintéticas · Fútbol 5</span>
           <h1 className="display h-xl" style={{ marginTop: 14 }}>Tu cancha.<br /><span className="volt">Tu hora.</span><br /><span className="outline-text">Sin choques.</span></h1>
           <p className="lead" style={{ color: '#B7C0BB' }}>Reserva en segundos, con disponibilidad en tiempo real y sugerencias inteligentes según cómo juegas.</p>

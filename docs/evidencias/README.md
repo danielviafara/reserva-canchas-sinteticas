@@ -36,6 +36,7 @@ Las figuras del Documento Maestro se tomaron de esta carpeta.
 |---|---|
 | `18_prueba_concurrencia.jpg` / `prueba_concurrencia.txt` | 10 reservas simultáneas: 1 confirmada, 9 rechazadas (Fig. 25) |
 | `19_pruebas_automaticas.jpg` / `pruebas_automaticas.txt` | 18 pruebas automáticas OK (Fig. 26) |
+| `tiempos_respuesta.txt` | Tiempos de respuesta de las operaciones principales (RNF03) |
 
 Para regenerarlas: `python scripts/test_concurrencia.py --n 10` y
 `python -m unittest tests.test_ia -v` desde `backend/`.

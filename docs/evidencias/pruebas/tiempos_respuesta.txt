@@ -1,0 +1,10 @@
+Tiempos de respuesta (30 llamadas por ruta) - 2026-11-19
+Operacion                     p50 (ms)  p95 (ms)  max (ms)  RNF03
+Consultar disponibilidad           2.5       3.5       3.6  cumple
+Demanda estimada (IA)              2.4       2.8    1345.8  cumple
+Mis reservas                       4.9       5.7      16.8  cumple
+Recomendaciones (IA)               4.2       4.4       4.8  cumple
+Perfil de juego (IA)               6.3       6.6       6.8  cumple
+Tablero de IA (admin)              7.9       9.3      10.0  cumple
+Clientes (admin)                   7.7       8.0       8.2  cumple
+Dataset (admin)                   11.9      12.2      13.1  cumple

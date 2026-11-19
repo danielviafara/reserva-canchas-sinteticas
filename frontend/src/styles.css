@@ -8,7 +8,7 @@
 :root{
   --ink:#07090A; --carbon:#0D1110; --surface:#121716; --surface-2:#181F1D; --raise:#1E2725;
   --line:rgba(242,244,239,.07); --line-2:rgba(242,244,239,.14); --line-3:rgba(242,244,239,.26);
-  --chalk:#F2F4EF; --mute:#8D9792; --faint:#5C6662;
+  --chalk:#F2F4EF; --mute:#8D9792; --faint:#808A85;
   --volt:#D4FF3A; --volt-2:#B8E61E; --volt-ink:#0A0F02; --volt-glow:rgba(212,255,58,.35);
   --pitch:#22C472; --signal:#FF5533; --amber:#FFB23F;
   --display:'Big Shoulders Display','Barlow Condensed',Impact,sans-serif;
@@ -375,9 +375,25 @@ tr:hover td{background:rgba(242,244,239,.02)}
 .li .grow b{display:block;font-family:var(--display);font-weight:800;font-size:20px;text-transform:uppercase;line-height:1.05}
 .li .grow span{font-size:13px;color:var(--mute)}
 
+/* siluetas de jugadores */
+.sil{display:block;background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center bottom;mask-position:center bottom;-webkit-mask-size:contain;mask-size:contain;pointer-events:none}
+.hero-sil{position:absolute;right:calc(22% - 175px);bottom:0;width:350px;height:92%;color:var(--chalk);opacity:.95;filter:drop-shadow(0 0 30px rgba(212,255,58,.3))}
+.hero-in{z-index:1;max-width:62%}
+.hero .h-xl{font-size:clamp(44px,6.2vw,86px)}
+.hero-meta .grow{display:none}
+.auth-sil{position:absolute;right:7%;top:6%;width:min(46%,360px);height:44%;color:var(--volt);opacity:.95;filter:drop-shadow(0 0 40px rgba(212,255,58,.25))}
+.auth-sil-ball{position:absolute;left:8%;top:14%;width:110px;height:180px;color:var(--chalk);opacity:.08}
+.head-sil{width:120px;height:120px;color:var(--volt);opacity:.9;flex:none}
+.empty .sil{width:120px;height:120px;color:var(--faint)}
+.seg-badge .sil{width:58px;height:62px;color:var(--volt-ink)}
+.page-head-sil{position:relative}
+.page-head-sil .deco{position:absolute;right:220px;bottom:-6px;width:150px;height:150px;color:var(--chalk);opacity:.07}
+@media (max-width:900px){.hero-in{max-width:none}.hero-sil{right:-50px;width:240px;height:70%;opacity:.22}.page-head-sil .deco{display:none}}
+@media (max-width:640px){.auth-sil{opacity:.25;width:70%}}
+
 /* perfil del jugador */
 .profile-hero{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.seg-badge{width:84px;height:84px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--volt);color:var(--volt-ink);box-shadow:0 0 0 8px rgba(212,255,58,.1)}
+.seg-badge{width:96px;height:96px;flex:none;display:grid;place-items:end center;padding-top:10px;overflow:hidden;border-radius:50%;background:var(--volt);color:var(--volt-ink);box-shadow:0 0 0 8px rgba(212,255,58,.1)}
 .pattern-quote{flex:1 1 320px;padding:16px 18px;border-left:3px solid var(--volt);background:rgba(242,244,239,.03);border-radius:0 var(--r) var(--r) 0}
 .pattern-quote p{margin:6px 0 0;font-size:16px;line-height:1.45;color:var(--chalk)}
 .heat-cell.zero{background:rgba(242,244,239,.03)}

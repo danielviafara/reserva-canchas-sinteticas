@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { api } from '../api'
 import Icon from './Icon.jsx'
+import Silueta from './Silueta.jsx'
 import { NIVEL, pct, parse, fechaLarga } from '../utils'
 
-const ICONO_SEGMENTO = { Fieles: 'trophy', 'Fin de semana': 'calendar', 'En riesgo': 'flame', Ocasionales: 'ball', Nuevo: 'spark' }
+const SILUETA_SEGMENTO = { Fieles: 'celebracionEspalda', 'Fin de semana': 'celebracion', 'En riesgo': 'cabezazo', Ocasionales: 'remate', Nuevo: 'remate' }
 
 // Vista del jugador: el patron de juego que la IA reconoce en su historial.
 export default function MiJuego({ irAReservar }) {
@@ -12,7 +13,8 @@ export default function MiJuego({ irAReservar }) {
   useEffect(() => { api.miPerfil().then(setD).catch(() => setErr('No se pudo calcular tu perfil.')) }, [])
   return (
     <section>
-      <div className="page-head">
+      <div className="page-head page-head-sil">
+        <Silueta name="cabezazo" className="deco" />
         <div>
           <span className="kicker">Análisis con IA</span>
           <h1 className="display h-lg" style={{ marginTop: 12 }}>Mi juego</h1>
@@ -46,7 +48,7 @@ export function PerfilJugador({ d, vista = 'cliente', onReservar }) {
       {/* ---------------------------------------------- segmento + patron */}
       <div className="ai-block" style={{ marginTop: tu ? 24 : 0 }}>
         <div className="ai-in profile-hero">
-          <div className="seg-badge"><Icon name={ICONO_SEGMENTO[d.segmento.nombre] || 'users'} size={34} /></div>
+          <div className="seg-badge"><Silueta name={SILUETA_SEGMENTO[d.segmento.nombre] || 'remate'} /></div>
           <div className="grow">
             <span className="pill ai"><Icon name="spark" size={13} />{tu ? 'Tu tipo de jugador' : 'Tipo de jugador'} · K-means</span>
             <h2 className="display h-lg" style={{ marginTop: 10 }}>{d.segmento.nombre}</h2>

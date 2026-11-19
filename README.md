@@ -13,7 +13,7 @@ horarios que mejor se ajustan a su forma de jugar.
 | | |
 |---|---|
 | 📄 Documento Maestro final | [`docs/Documento_Maestro_GolTime.pdf`](docs/Documento_Maestro_GolTime.pdf) |
-| 🎤 Guía de la presentación | [`docs/GUIA_DEMOSTRACION.md`](docs/GUIA_DEMOSTRACION.md) |
+| 🧪 Pruebas de usabilidad | [`docs/PRUEBAS_USABILIDAD.md`](docs/PRUEBAS_USABILIDAD.md) |
 | 🖼️ Evidencias (prototipo, IA y pruebas) | [`docs/evidencias/`](docs/evidencias/) |
 | 📊 Dataset de entrenamiento | [`database/dataset/reservas_sinteticas.csv`](database/dataset/reservas_sinteticas.csv) |
 
@@ -98,10 +98,12 @@ Al iniciar, el backend crea las tablas y carga los datos base (3 canchas, 4 fran
 cd backend
 python scripts/test_concurrencia.py --n 10   # con el backend corriendo
 python -m unittest tests.test_ia -v          # usa una SQLite temporal
+python scripts/medir_tiempos.py --n 30       # tiempos de respuesta (RNF03)
 ```
 
 - **Concurrencia:** 10 reservas simultáneas de 5 usuarios sobre la misma franja → 1 confirmada (201) y 9 rechazadas (409). Al final cancela la reserva ganadora para dejar los datos como estaban.
 - **18 pruebas automáticas:** integridad del dataset, concurrencia, doble reserva, seguridad de rutas, patrones de los perfiles demo, recomendaciones y aprendizaje de los modelos.
+- **Usabilidad:** recorrido de tareas, tiempos de respuesta, adaptación a pantallas, contraste y evaluación heurística en [`docs/PRUEBAS_USABILIDAD.md`](docs/PRUEBAS_USABILIDAD.md).
 
 Para ver las transacciones en consola (BEGIN, INSERT, COMMIT, ROLLBACK) pon `SQL_ECHO=true` en el `.env`.
 
@@ -124,18 +126,18 @@ reserva-canchas-sinteticas/
 │  │  ├─ schemas/                validación Pydantic
 │  │  ├─ repositories/           acceso a datos
 │  │  └─ services/               reserva, autenticación, administración e IA (ia_service)
-│  ├─ scripts/                   generar_dataset.py · test_concurrencia.py
+│  ├─ scripts/                   generar_dataset.py · test_concurrencia.py · medir_tiempos.py
 │  └─ tests/                     test_ia.py (18 pruebas)
 ├─ frontend/                     aplicación React + Vite
-│  ├─ public/img/                fondos opcionales (hero.jpg, auth.jpg)
 │  └─ src/
+│     ├─ assets/siluetas/        siluetas de jugadores de la identidad visual
 │     ├─ components/             Auth, Navbar, Disponibilidad, MisReservas, MiJuego,
-│     │                          Admin, AdminIA, AdminDatos, Icon
+│     │                          Admin, AdminIA, AdminDatos, Icon, Silueta
 │     ├─ api.js                  capa de acceso a la API
 │     ├─ utils.js                fechas en hora local
 │     └─ styles.css              sistema visual de la marca
 ├─ database/                     scripts SQL de PostgreSQL y dataset exportado
-└─ docs/                         documento maestro, guía de demostración y evidencias
+└─ docs/                         documento maestro, pruebas de usabilidad y evidencias
 ```
 
 ## Tecnologías

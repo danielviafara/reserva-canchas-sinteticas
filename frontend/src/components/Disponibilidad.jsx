@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '../api'
 import Icon from './Icon.jsx'
+import Silueta from './Silueta.jsx'
 import { DIAS, MESES, NIVEL, hoy, iso, parse, pct, proximosDias, yaPaso, fechaLarga } from '../utils'
 
 const REGLAS = [
@@ -86,8 +87,9 @@ export default function Disponibilidad({ usuario, irAMis, sugerencia, limpiarSug
   return (
     <section>
       {/* ---------------------------------------------------------- portada */}
-      <div className="hero" style={{ '--hero-img': 'url(/img/hero.jpg)' }}>
+      <div className="hero">
         <span className="hero-tag"><span className="live" />Disponibilidad en vivo</span>
+        <Silueta name="celebracion" className="hero-sil" />
         <div className="hero-in">
           <span className="kicker">Hola, {(usuario?.nombre || '').split(' ')[0] || 'crack'}</span>
           <h1 className="display h-xl" style={{ marginTop: 14 }}>Bajo las luces,<br /><span className="volt">cada minuto cuenta.</span></h1>
@@ -165,7 +167,7 @@ export default function Disponibilidad({ usuario, irAMis, sugerencia, limpiarSug
           {cargando && !franjas.length ? (
             <div className="slots">{[0, 1, 2, 3].map(i => <div key={i} className="skeleton" />)}</div>
           ) : !franjas.length ? (
-            <div className="empty"><Icon name="clock" size={30} />No hay franjas configuradas.</div>
+            <div className="empty"><Silueta name="duelo" style={{ width: 200 }} />No hay franjas configuradas.</div>
           ) : (
             <div className="slots" style={{ opacity: cargando ? .6 : 1, transition: 'opacity .2s' }}>
               {franjas.map(f => {
