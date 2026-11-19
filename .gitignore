@@ -6,3 +6,5 @@ frontend/node_modules/
 .env
 *.bak
 **/*.bak
+dist/
+frontend/dist/

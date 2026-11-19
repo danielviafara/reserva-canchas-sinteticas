@@ -22,6 +22,40 @@ evitar que dos personas terminen con el mismo turno de la misma cancha.
 - La configuración sensible (conexión y clave JWT) se maneja por variables de entorno en un
   `.env` local excluido de Git.
 
+## Inteligencia artificial (Fase 5)
+
+El módulo `backend/app/services/ia_service.py` aprende del historial de reservas guardado en
+PostgreSQL (Python puro, sin librerías extra) y se reentrena solo cuando cambian las reservas:
+
+| Modelo | Técnica | Dónde se ve |
+|---|---|---|
+| Demanda por franja | Tasa histórica por día/hora con decaimiento exponencial (vida media 6 semanas) + suavizado bayesiano + factor por cancha | Barra de demanda en cada franja de «Reservar» y mapa de calor del admin |
+| Riesgo de cancelación | Regresión logística (descenso de gradiente), validación temporal 80/20, exactitud y AUC | Admin → Inteligencia |
+| Tipos de jugador | K-means (k = 4) sobre frecuencia, cancelación, fin de semana, antelación y regularidad | Admin → Inteligencia |
+| Recomendaciones | `afinidad × √(1 − demanda)` | Bloque «Hecho a tu medida» del jugador |
+
+Endpoints: `GET /ia/demanda`, `GET /ia/recomendaciones` (jugador) y `GET /admin/ia` (admin).
+
+### Dataset ficticio
+
+`backend/scripts/generar_dataset.py` simula ~6 meses de reservas con patrones realistas
+(viernes y 19–21 h como hora pico, efecto quincena, festivos colombianos, diciembre flojo,
+cuatro arquetipos de cliente). Los usuarios sintéticos usan el dominio `@demo.goltime.co`.
+
+```bash
+cd backend
+python -m scripts.generar_dataset            # genera e inserta en la BD
+python -m scripts.generar_dataset --reset    # borra lo sintético y regenera
+```
+
+También exporta `database/dataset/reservas_sinteticas.csv` (incluye el arquetipo real de cada
+cliente, útil para comparar con lo que descubre K-means).
+
+### Imágenes
+
+Coloca `hero.jpg` y `auth.jpg` en `frontend/public/img/` (ver `LEEME.md` ahí). Si no existen,
+la interfaz usa un fondo de cancha generado por CSS.
+
 ## Tecnologías
 
 - **Frontend:** React + Vite

@@ -11,18 +11,21 @@ function leerUsuario() {
 
 export default function App() {
   const [usuario, setUsuario] = useState(leerUsuario())
-  const [vista, setVista] = useState('disponibilidad')
+  const [vista, setVista] = useState(() => (leerUsuario()?.rol === 'admin' ? 'admin' : 'disponibilidad'))
 
-  function onLogin(u) { localStorage.setItem('goltime_user', JSON.stringify(u)); setUsuario(u); setVista('disponibilidad') }
+  function onLogin(u) {
+    localStorage.setItem('goltime_user', JSON.stringify(u)); setUsuario(u)
+    setVista(u.rol === 'admin' ? 'admin' : 'disponibilidad')
+  }
   function onLogout() { localStorage.removeItem('goltime_token'); localStorage.removeItem('goltime_user'); setUsuario(null) }
 
-  if (!usuario) return <div className="container"><Auth onLogin={onLogin} /></div>
+  if (!usuario) return <Auth onLogin={onLogin} />
 
   return (
-    <div className="container">
+    <div className="shell">
       <Navbar usuario={usuario} vista={vista} setVista={setVista} onLogout={onLogout} />
-      {vista === 'disponibilidad' && <Disponibilidad />}
-      {vista === 'mis' && <MisReservas />}
+      {vista === 'disponibilidad' && <Disponibilidad usuario={usuario} irAMis={() => setVista('mis')} />}
+      {vista === 'mis' && <MisReservas irAReservar={() => setVista('disponibilidad')} />}
       {vista === 'admin' && usuario.rol === 'admin' && <Admin />}
     </div>
   )

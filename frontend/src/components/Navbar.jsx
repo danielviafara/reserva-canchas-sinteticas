@@ -1,25 +1,35 @@
 import React from 'react'
 import Icon from './Icon.jsx'
 
+export function Wordmark() {
+  return <div className="wordmark"><span className="mk"><Icon name="ball" size={20} /></span><span>Gol<i>Time</i></span></div>
+}
+
 export default function Navbar({ usuario, vista, setVista, onLogout }) {
   const inicial = (usuario.nombre || 'U').trim().charAt(0).toUpperCase()
   const esAdmin = usuario.rol === 'admin'
+  const items = [
+    ['disponibilidad', 'calendar', 'Reservar'],
+    ...(esAdmin ? [['admin', 'shield', 'Administración']] : [['mis', 'ticket', 'Mis reservas']]),
+  ]
   return (
-    <nav className="nav">
-      <div className="brand"><span className="mark"><Icon name="pitch" size={19} /></span>Gol<em>Time</em></div>
-      <div className="tabs">
-        <button className={'tab' + (vista === 'disponibilidad' ? ' active' : '')} onClick={() => setVista('disponibilidad')}>
-          <Icon name="calendar" size={16} />Disponibilidad</button>
-        {!esAdmin &&
-          <button className={'tab' + (vista === 'mis' ? ' active' : '')} onClick={() => setVista('mis')}>
-            <Icon name="ticket" size={16} />Mis reservas</button>}
-        {esAdmin &&
-          <button className={'tab' + (vista === 'admin' ? ' active' : '')} onClick={() => setVista('admin')}>
-            <Icon name="shield" size={16} />Administración</button>}
+    <header className="topbar">
+      <div className="topbar-in">
+        <Wordmark />
+        <nav className="nav">
+          {items.map(([id, ic, txt]) => (
+            <button key={id} className={vista === id ? 'on' : ''} onClick={() => setVista(id)}>
+              <Icon name={ic} size={17} /><span>{txt}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="grow" />
+        <div className="me">
+          <span className="av">{inicial}</span>
+          <span className="who"><b>{usuario.nombre}</b><span>{esAdmin ? 'Administrador' : 'Jugador'}</span></span>
+        </div>
+        <button className="icon-btn" onClick={onLogout} title="Cerrar sesión" aria-label="Cerrar sesión"><Icon name="logout" size={17} /></button>
       </div>
-      <div className="spacer" />
-      <div className="user"><span className="av">{inicial}</span><span className="txt">Hola, <span className="muted">{usuario.nombre}</span></span></div>
-      <button className="btn ghost sm" onClick={onLogout}><Icon name="logout" size={15} />Salir</button>
-    </nav>
+    </header>
   )
 }

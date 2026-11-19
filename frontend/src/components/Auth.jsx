@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { api } from '../api'
 import Icon from './Icon.jsx'
+import { Wordmark } from './Navbar.jsx'
 
 export default function Auth({ onLogin }) {
   const [modo, setModo] = useState('login')
@@ -14,9 +15,7 @@ export default function Auth({ onLogin }) {
     e.preventDefault()
     setErr(''); setCargando(true)
     try {
-      const r = modo === 'login'
-        ? await api.login(email, password)
-        : await api.register(nombre, email, password)
+      const r = modo === 'login' ? await api.login(email, password) : await api.register(nombre, email, password)
       localStorage.setItem('goltime_token', r.access_token)
       onLogin(r.usuario)
     } catch (ex) {
@@ -24,37 +23,54 @@ export default function Auth({ onLogin }) {
     } finally { setCargando(false) }
   }
 
+  const demo = (e, p) => { setModo('login'); setEmail(e); setPassword(p); setErr('') }
+
   return (
-    <div className="auth-wrap">
-      <div className="auth-brand">
-        <div className="brand"><span className="mark"><Icon name="pitch" size={22} /></span>Gol<em>Time</em></div>
-        <p>Reserva tu cancha sintética bajo las luces.</p>
-      </div>
-      <div className="panel">
-        <h2>{modo === 'login' ? 'Inicia sesión' : 'Crea tu cuenta'}</h2>
-        <p className="sub">{modo === 'login' ? 'Entra para reservar tu turno.' : 'Regístrate para empezar a reservar.'}</p>
-        <form onSubmit={enviar}>
-          {modo === 'registro' && (
-            <div className="field"><label>Nombre</label>
-              <input value={nombre} onChange={e => setNombre(e.target.value)} required minLength={2} /></div>
-          )}
-          <div className="field"><label>Correo</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required /></div>
-          <div className="field"><label>Contraseña</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} /></div>
-          <button className="btn block" disabled={cargando}>
-            {cargando ? 'Procesando…' : (modo === 'login' ? 'Entrar' : 'Crear cuenta')}
-          </button>
-        </form>
-        {err && <div className="msg err">{err}</div>}
-        <div className="switch">
-          {modo === 'login' ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}{' '}
-          <button onClick={() => { setErr(''); setModo(modo === 'login' ? 'registro' : 'login') }}>
-            {modo === 'login' ? 'Crear una' : 'Inicia sesión'}
-          </button>
+    <div className="auth">
+      <aside className="auth-art" style={{ '--auth-img': 'url(/img/auth.jpg)' }}>
+        <Wordmark />
+        <div>
+          <span className="kicker">Canchas sintéticas · Fútbol 5</span>
+          <h1 className="display h-xl" style={{ marginTop: 14 }}>Tu cancha.<br /><span className="volt">Tu hora.</span><br /><span className="outline-text">Sin choques.</span></h1>
+          <p className="lead" style={{ color: '#B7C0BB' }}>Reserva en segundos, con disponibilidad en tiempo real y sugerencias inteligentes según cómo juegas.</p>
         </div>
-        {modo === 'login' && <div className="hint">Demo · daniel@correo.com / cliente123</div>}
-      </div>
+      </aside>
+
+      <main className="auth-form">
+        <div className="auth-card">
+          <span className="kicker">{modo === 'login' ? 'Bienvenido de vuelta' : 'Únete al equipo'}</span>
+          <h2 className="display h-lg" style={{ marginTop: 10 }}>{modo === 'login' ? 'Entra a jugar' : 'Crea tu cuenta'}</h2>
+
+          <div className="switcher">
+            <button className={modo === 'login' ? 'on' : ''} onClick={() => { setModo('login'); setErr('') }}>Iniciar sesión</button>
+            <button className={modo === 'registro' ? 'on' : ''} onClick={() => { setModo('registro'); setErr('') }}>Registrarme</button>
+          </div>
+
+          <form onSubmit={enviar}>
+            {modo === 'registro' && (
+              <div className="field"><label>Nombre</label>
+                <div className="input"><Icon name="user" size={17} /><input value={nombre} onChange={e => setNombre(e.target.value)} required minLength={2} placeholder="Tu nombre" /></div></div>
+            )}
+            <div className="field"><label>Correo</label>
+              <div className="input"><Icon name="mail" size={17} /><input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="tu@correo.com" /></div></div>
+            <div className="field"><label>Contraseña</label>
+              <div className="input"><Icon name="shield" size={17} /><input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} placeholder="Mínimo 6 caracteres" /></div></div>
+            <button className="btn wide glow" disabled={cargando} style={{ marginTop: 8 }}>
+              {cargando ? 'Procesando…' : (modo === 'login' ? 'Entrar a la cancha' : 'Crear cuenta')}
+              <Icon name="arrow" size={18} className="go" />
+            </button>
+          </form>
+          {err && <div className="toast err"><Icon name="info" size={18} />{err}</div>}
+
+          {modo === 'login' && (
+            <div className="demo">
+              Cuentas de demostración:{' '}
+              <button type="button" onClick={() => demo('daniel@correo.com', 'cliente123')}>Jugador</button>{' · '}
+              <button type="button" onClick={() => demo('admin@goltime.com', 'admin123')}>Administrador</button>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   )
 }

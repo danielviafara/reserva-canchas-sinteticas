@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.db.session import Base, engine
 from app.db import models  # noqa: F401 (registra los modelos)
 from app.db.seed import seed
-from app.api.routes import auth, canchas, disponibilidad, reservas, admin
+from app.api.routes import auth, canchas, disponibilidad, reservas, admin, ia
 
 app = FastAPI(title="GolTime - API de reservas")
 
@@ -32,3 +32,4 @@ app.include_router(canchas.router)
 app.include_router(disponibilidad.router)
 app.include_router(reservas.router)
 app.include_router(admin.router)
+app.include_router(ia.router)

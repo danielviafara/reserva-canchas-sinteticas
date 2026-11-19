@@ -21,6 +21,11 @@ export const api = {
   misReservas: () => req('/reservas', { auth: true }),
   cancelar: (id) => req(`/reservas/${id}/cancelar`, { method: 'POST', auth: true }),
 
+  // inteligencia artificial
+  demanda: (cancha_id, fecha) => req(`/ia/demanda?cancha_id=${cancha_id}&fecha=${fecha}`),
+  recomendaciones: () => req('/ia/recomendaciones', { auth: true }),
+  adminIA: () => req('/admin/ia', { auth: true }),
+
   // administración
   adminReservas: () => req('/admin/reservas', { auth: true }),
   adminCancelar: (id) => req(`/admin/reservas/${id}/cancelar`, { method: 'POST', auth: true }),
