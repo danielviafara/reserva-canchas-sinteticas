@@ -415,7 +415,7 @@ tr.sel td{background:rgba(212,255,58,.06)}
 .switcher button.on{color:var(--chalk)}
 .switcher button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--volt)}
 .demo{margin-top:22px;padding:14px 16px;border-radius:var(--r);border:1px dashed var(--line-2);font-size:13px;color:var(--mute)}
-.demo button{background:none;border:0;color:var(--volt);cursor:pointer;padding:0;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
 
 /* ------------------------------------------------------------ responsive */
 @media (max-width:900px){

@@ -1,74 +1,69 @@
 # GolTime — Sistema de Reserva de Canchas Sintéticas
 
-![Estado](https://img.shields.io/badge/estado-interfaz%20%2B%20operaci%C3%B3n%20de%20reserva-brightgreen)
+![Estado](https://img.shields.io/badge/estado-entrega%20final-brightgreen)
+![Pruebas](https://img.shields.io/badge/pruebas-18%20OK-brightgreen)
 
-Aplicación para reservar canchas sintéticas por franjas horarias, pensada para
-evitar que dos personas terminen con el mismo turno de la misma cancha.
+Sistema transaccional para reservar canchas sintéticas por franjas horarias que **impide la
+doble reserva aun con acceso concurrente**, con un **servicio de inteligencia artificial** que
+aprende del histórico de reservas para predecir la demanda y recomendarle a cada jugador los
+horarios que mejor se ajustan a su forma de jugar.
 
 > Proyecto académico — Universidad Manuela Beltrán · Sistemas Transaccionales · Quinto semestre.
 
+| | |
+|---|---|
+| 📄 Documento Maestro final | [`docs/Documento_Maestro_GolTime.pdf`](docs/Documento_Maestro_GolTime.pdf) |
+| 🎤 Guía de la presentación | [`docs/GUIA_DEMOSTRACION.md`](docs/GUIA_DEMOSTRACION.md) |
+| 🖼️ Evidencias (prototipo, IA y pruebas) | [`docs/evidencias/`](docs/evidencias/) |
+| 📊 Dataset de entrenamiento | [`database/dataset/reservas_sinteticas.csv`](database/dataset/reservas_sinteticas.csv) |
+
 ---
 
-## Novedades de esta fase (Fase 4)
+## Funcionalidades
 
-- **Diseño y navegabilidad de la interfaz** (React + Vite): menú principal con navegación
-  entre Disponibilidad y Mis reservas, estados activos, y mensajes claros de éxito y error.
-- **Integración con la base de datos consolidada en PostgreSQL:** registro de usuarios,
-  consulta y visualización de reservas desde la aplicación, con validación de los datos
-  antes de enviarlos y manejo básico de errores de conexión y de operación.
-- **Operación principal:** consultar disponibilidad y **reservar una franja**, con el control
-  que impide la **doble reserva** (RF04 y RF05 del documento maestro).
-- **Scripts SQL actualizados a PostgreSQL** en `database/`, acordes con el esquema real.
-- La configuración sensible (conexión y clave JWT) se maneja por variables de entorno en un
-  `.env` local excluido de Git.
+**Cliente**
+- Reserva en tres bloques: cancha → día (próximas 2 semanas) → hora, con la demanda estimada por la IA en cada franja.
+- Confirmación con datos de contacto; aviso claro si otra persona tomó la franja primero (409).
+- *Mis reservas*: próximos partidos, historial y cancelación.
+- *Mi juego*: tipo de jugador, patrón detectado, mapa de juego, riesgo del próximo partido y recomendaciones que abren la reserva directamente.
 
-## Inteligencia artificial (Fase 5)
+**Administrador**
+- *Inteligencia*: ocupación, hallazgos de la IA, mapa de demanda, pronóstico de 7 días, reservas con riesgo de cancelación, pesos del modelo y tipos de jugador.
+- *Clientes*: tipo y patrón de cada cliente, con su perfil completo.
+- *Dataset*: distribuciones, muestra, diccionario de datos y descarga en CSV.
+- *Reservas*, *Canchas* y *Franjas*: gestión y cancelación.
 
-El módulo `backend/app/services/ia_service.py` aprende del historial de reservas guardado en
-PostgreSQL (Python puro, sin librerías extra) y se reentrena solo cuando cambian las reservas:
+## Servicio de inteligencia artificial
 
-| Modelo | Técnica | Dónde se ve |
+Módulo [`backend/app/services/ia_service.py`](backend/app/services/ia_service.py), en Python
+puro. Lee las reservas de PostgreSQL, entrena en memoria en menos de un segundo y se vuelve a
+entrenar cuando cambian las reservas. **No escribe en la base de datos ni participa en la transacción de reserva.**
+
+| Modelo | Técnica | Resultado |
 |---|---|---|
-| Demanda por franja | Tasa histórica por día/hora con decaimiento exponencial (vida media 6 semanas) + suavizado bayesiano + factor por cancha | Barra de demanda en cada franja de «Reservar» y mapa de calor del admin |
-| Riesgo de cancelación | Regresión logística (descenso de gradiente), validación temporal 80/20, exactitud y AUC | Admin → Inteligencia |
-| Tipos de jugador | K-means (k = 4) sobre frecuencia, cancelación, fin de semana, antelación y regularidad | Admin → Inteligencia |
-| Recomendaciones | `afinidad × √(1 − demanda)` | Bloque «Hecho a tu medida» del jugador |
+| Demanda por franja | Tasa histórica por día/hora con decaimiento exponencial, suavizado bayesiano y factor por cancha | Probabilidad de ocupación |
+| Riesgo de cancelación | Regresión logística (descenso de gradiente), validación temporal 80/20 | Probabilidad de cancelación · AUC 0,66 · detecta 2,1× más que el azar |
+| Tipos de jugador | K-means (k = 4) sobre frecuencia, cancelación, fin de semana, antelación y regularidad | Fieles, Fin de semana, En riesgo, Ocasionales |
+| Recomendación | Coincidencia con los hábitos × cancha favorita × √(1 − demanda) | 3 franjas libres con su motivo |
 
-Endpoints: `GET /ia/demanda`, `GET /ia/recomendaciones`, `GET /ia/mi-perfil` (jugador) y
+Rutas: `GET /ia/demanda`, `/ia/recomendaciones`, `/ia/mi-perfil` (jugador) ·
 `GET /admin/ia`, `/admin/ia/clientes`, `/admin/ia/clientes/{id}`, `/admin/ia/dataset`, `/admin/ia/dataset.csv` (admin).
-
-### Perfiles de demostración
-
-Cada uno tiene ~6 meses de historia con un patrón distinto. Al entrar con uno, la pestaña
-**Mi juego** muestra lo que la IA reconoce (tipo de jugador, mapa de juego, combinaciones
-favoritas, riesgo del próximo partido) y le recomienda en consecuencia. El admin ve lo mismo
-de cualquier cliente en **Administración → Clientes**, y el dataset completo en **→ Dataset**.
-
-| Perfil | Correo | Contraseña | Patrón | Tipo que asigna la IA |
-|---|---|---|---|---|
-| Daniel | `daniel@correo.com` | `cliente123` | Martes y jueves 20:00, Cancha 1 | Fieles |
-| Laura | `laura@demo.goltime.co` | `demo1234` | Sábado 19:00 y domingo 18:00, Cancha 2 | Fin de semana |
-| Andrés | `andres@demo.goltime.co` | `demo1234` | Reserva mucho, con antelación, y cancela ~45 % | En riesgo |
-| Camila | `camila@demo.goltime.co` | `demo1234` | Pocas reservas, sin día fijo | Ocasionales |
-| Julián | `julian@demo.goltime.co` | `demo1234` | Lunes y martes 18:00 (horas flojas), Cancha 3 | Fieles |
-
-### Pruebas
-
-```bash
-cd backend
-python -m unittest tests.test_ia -v
-```
-
-17 pruebas sobre una base SQLite temporal (no tocan PostgreSQL): que el dataset respete la
-regla de no doble reserva, que la IA reconozca el tipo y la rutina de cada perfil demo y le
-recomiende su franja habitual, que los modelos aprendan la hora pico y los factores de
-cancelación, y que la API proteja las rutas de admin y rechace la doble reserva.
 
 ### Dataset ficticio
 
-`backend/scripts/generar_dataset.py` simula ~6 meses de reservas con patrones realistas
-(viernes y 19–21 h como hora pico, efecto quincena, festivos colombianos, diciembre flojo,
-cuatro arquetipos de cliente). Los usuarios sintéticos usan el dominio `@demo.goltime.co`.
+[`backend/scripts/generar_dataset.py`](backend/scripts/generar_dataset.py) simula 6 meses de
+operación con reglas realistas (viernes y 19–21 h como hora pico, quincena, festivos
+colombianos, diciembre flojo, Cancha 1 favorita) y nunca genera dos reservas confirmadas en el
+mismo cupo. Incluye 115 clientes por arquetipo y 5 perfiles demo con patrones marcados:
+
+| Perfil | Correo | Contraseña | Patrón | Tipo que asigna la IA |
+|---|---|---|---|---|
+| Administrador | `admin@goltime.com` | `admin123` | — | — |
+| Daniel | `daniel@correo.com` | `cliente123` | Martes y jueves 20:00, Cancha 1 | Fieles |
+| Laura | `laura@demo.goltime.co` | `demo1234` | Sábado 19:00 y domingo 18:00, Cancha 2 | Fin de semana |
+| Andrés | `andres@demo.goltime.co` | `demo1234` | Reserva mucho, con antelación, y cancela ~50 % | En riesgo |
+| Camila | `camila@demo.goltime.co` | `demo1234` | Pocas reservas, sin día fijo | Ocasionales |
+| Julián | `julian@demo.goltime.co` | `demo1234` | Lunes y martes 18:00, Cancha 3 | Fieles |
 
 ```bash
 cd backend
@@ -76,108 +71,76 @@ python -m scripts.generar_dataset            # genera e inserta en la BD
 python -m scripts.generar_dataset --reset    # borra lo sintético y regenera
 ```
 
-También exporta `database/dataset/reservas_sinteticas.csv` (incluye el arquetipo real de cada
-cliente, útil para comparar con lo que descubre K-means).
-
-### Imágenes
-
-Coloca `hero.jpg` y `auth.jpg` en `frontend/public/img/` (ver `LEEME.md` ahí). Si no existen,
-la interfaz usa un fondo de cancha generado por CSS.
-
-## Tecnologías
-
-- **Frontend:** React + Vite
-- **Backend:** FastAPI (Python) · SQLAlchemy
-- **Base de datos:** PostgreSQL
-- **Autenticación:** JWT
-
-## Estructura
-
-```
-reserva-canchas-sinteticas/
-├─ frontend/        # aplicación React + Vite
-│  └─ src/
-│     ├─ components/  (Auth, Navbar, Disponibilidad, MisReservas)
-│     ├─ api.js       (capa de acceso a la API)
-│     └─ styles.css
-├─ backend/         # API FastAPI por capas
-│  └─ app/
-│     ├─ api/          (rutas y dependencias)
-│     ├─ core/         (config, seguridad JWT)
-│     ├─ db/           (sesión, modelos, seed)
-│     ├─ schemas/      (validación Pydantic)
-│     ├─ repositories/ (acceso a datos)
-│     └─ services/     (lógica de reserva y autenticación)
-├─ database/        # scripts SQL de la base de datos
-└─ docs/            # documentación del proyecto
-```
-
 ## Cómo ejecutar
 
-### 1. Backend (API)
+Requisitos: Python 3.11+, Node 18+ y PostgreSQL (o SQLite para una prueba rápida).
 
 ```bash
+# 1. Backend — http://localhost:8000 (documentación en /docs)
 cd backend
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env                # ajusta la conexión a PostgreSQL
+cp .env.example .env                                # ajusta DATABASE_URL y JWT_SECRET
 uvicorn app.main:app --reload
-```
+python -m scripts.generar_dataset                   # carga el dataset (una vez)
 
-La API queda en `http://localhost:8000` (documentación interactiva en `/docs`).
-Al iniciar crea las tablas y carga datos de prueba (3 canchas, 4 franjas y 2 usuarios).
-
-Usuarios de prueba:
-- Cliente — `daniel@correo.com` / `cliente123`
-- Administrador — `admin@goltime.com` / `admin123`
-
-### 2. Frontend (aplicación)
-
-```bash
+# 2. Frontend — http://localhost:5173
 cd frontend
 npm install
 npm run dev
 ```
 
-La aplicación queda en `http://localhost:5173` y habla con el backend a través de `/api`.
+Al iniciar, el backend crea las tablas y carga los datos base (3 canchas, 4 franjas, administrador y Daniel).
 
-### 3. Probar el control de concurrencia (opcional)
-
-Con el backend corriendo, en otra terminal:
+## Pruebas
 
 ```bash
 cd backend
-python scripts/test_concurrencia.py
+python scripts/test_concurrencia.py --n 10   # con el backend corriendo
+python -m unittest tests.test_ia -v          # usa una SQLite temporal
 ```
 
-Dispara dos reservas sobre la misma franja a la vez y debe mostrar una confirmada (201)
-y una rechazada (409), evidenciando que no se produce la doble reserva.
+- **Concurrencia:** 10 reservas simultáneas de 5 usuarios sobre la misma franja → 1 confirmada (201) y 9 rechazadas (409). Al final cancela la reserva ganadora para dejar los datos como estaban.
+- **18 pruebas automáticas:** integridad del dataset, concurrencia, doble reserva, seguridad de rutas, patrones de los perfiles demo, recomendaciones y aprendizaje de los modelos.
 
-## Base de datos
+Para ver las transacciones en consola (BEGIN, INSERT, COMMIT, ROLLBACK) pon `SQL_ECHO=true` en el `.env`.
 
-Al iniciar, el backend crea las tablas automáticamente desde los modelos (SQLAlchemy) y
-carga datos de prueba. Como evidencia del modelo relacional, en `database/` están los
-scripts SQL equivalentes para **PostgreSQL**:
+## Control de la doble reserva
 
-```bash
-psql -U usuario -d postgres -f database/01_create_database.sql
-psql -U usuario -d goltime  -f database/02_tables.sql
-psql -U usuario -d goltime  -f database/03_seed.sql
+1. El cliente elige una franja libre y confirma.
+2. El backend verifica dentro de una transacción que la franja siga libre y la registra.
+3. Si dos solicitudes llegan a la vez, el **índice único filtrado** `UX_Reserva_Slot_Confirmada`
+   (una sola reserva `confirmada` por cancha, fecha y franja) rechaza la segunda y la API responde `409`.
+
+## Estructura
+
+```
+reserva-canchas-sinteticas/
+├─ backend/                      API FastAPI por capas
+│  ├─ app/
+│  │  ├─ api/routes/             auth, canchas, disponibilidad, reservas, admin, ia
+│  │  ├─ core/                   configuración y seguridad JWT
+│  │  ├─ db/                     sesión, modelos ORM y datos base
+│  │  ├─ schemas/                validación Pydantic
+│  │  ├─ repositories/           acceso a datos
+│  │  └─ services/               reserva, autenticación, administración e IA (ia_service)
+│  ├─ scripts/                   generar_dataset.py · test_concurrencia.py
+│  └─ tests/                     test_ia.py (18 pruebas)
+├─ frontend/                     aplicación React + Vite
+│  ├─ public/img/                fondos opcionales (hero.jpg, auth.jpg)
+│  └─ src/
+│     ├─ components/             Auth, Navbar, Disponibilidad, MisReservas, MiJuego,
+│     │                          Admin, AdminIA, AdminDatos, Icon
+│     ├─ api.js                  capa de acceso a la API
+│     ├─ utils.js                fechas en hora local
+│     └─ styles.css              sistema visual de la marca
+├─ database/                     scripts SQL de PostgreSQL y dataset exportado
+└─ docs/                         documento maestro, guía de demostración y evidencias
 ```
 
-Para **evidenciar las transacciones** en consola (BEGIN, INSERT, COMMIT, ROLLBACK), basta
-con poner `SQL_ECHO=true` en el `.env` y reiniciar el backend.
+## Tecnologías
 
-## Operación principal: reservar una franja
-
-1. El cliente inicia sesión y consulta la disponibilidad de una cancha para una fecha.
-2. Selecciona una franja libre y confirma.
-3. El backend verifica, dentro de una transacción, que la franja siga libre y la registra.
-4. Si otra persona la tomó primero, responde `409` y la aplicación vuelve a sincronizar la grilla.
-
-El invariante "una sola reserva confirmada por cancha, fecha y franja" se respalda con un
-índice único filtrado en la base de datos.
+React + Vite · FastAPI · SQLAlchemy · PostgreSQL · JWT · Python (modelos de IA sin dependencias externas).
 
 ## Autor
 

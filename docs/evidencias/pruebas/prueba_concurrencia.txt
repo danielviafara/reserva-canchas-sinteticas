@@ -1,0 +1,22 @@
+==================================================================
+PRUEBA DE CONCURRENCIA - GolTime
+==================================================================
+Franja objetivo : Cancha 1 · 2026-11-19 · 19:00-20:00
+Usuarios        : 5 · peticiones simultaneas: 10
+------------------------------------------------------------------
+  # 1 daniel@correo.com          HTTP 201  CONFIRMADA                           15 ms
+  # 2 laura@demo.goltime.co      HTTP 409  RECHAZADA: franja ya reservada       16 ms
+  # 3 andres@demo.goltime.co     HTTP 409  RECHAZADA: franja ya reservada       18 ms
+  # 4 camila@demo.goltime.co     HTTP 409  RECHAZADA: franja ya reservada       14 ms
+  # 5 julian@demo.goltime.co     HTTP 409  RECHAZADA: franja ya reservada       16 ms
+  # 6 daniel@correo.com          HTTP 409  RECHAZADA: franja ya reservada       17 ms
+  # 7 laura@demo.goltime.co      HTTP 409  RECHAZADA: franja ya reservada       15 ms
+  # 8 andres@demo.goltime.co     HTTP 409  RECHAZADA: franja ya reservada       17 ms
+  # 9 camila@demo.goltime.co     HTTP 409  RECHAZADA: franja ya reservada       17 ms
+  #10 julian@demo.goltime.co     HTTP 409  RECHAZADA: franja ya reservada       18 ms
+------------------------------------------------------------------
+Confirmadas (201): 1   Rechazadas (409): 9   Otros: 0
+Estado final de la franja en la base de datos: ocupada
+RESULTADO: OK - no hubo doble reserva
+Limpieza: reserva 7422 cancelada (HTTP 200); la franja vuelve a estar libre.
+==================================================================

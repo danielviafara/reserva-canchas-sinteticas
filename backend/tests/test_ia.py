@@ -12,7 +12,8 @@ Que se comprueba:
     y le recomienda su franja de siempre.
   * Los modelos aprenden lo que el generador escondio en los datos (hora pico,
     efecto de la antelacion y del historial en la cancelacion).
-  * La API responde, protege las rutas de administrador y mantiene el control de doble reserva.
+  * La API responde, protege las rutas de administrador y mantiene el control de doble
+    reserva, incluso con 8 peticiones simultaneas sobre la misma franja.
 """
 import json
 import os
@@ -240,6 +241,33 @@ class TestZApi(unittest.TestCase):
         st, p = self.req(f"/admin/ia/clientes/{demo[0]['usuario_id']}", self.admin)
         self.assertEqual(st, 200)
         self.assertIn("patron", p)
+
+    def test_concurrencia_misma_franja(self):
+        """8 peticiones simultaneas sobre la misma franja: exactamente una se confirma."""
+        st, rec = self.req("/ia/recomendaciones", self.admin)
+        r = rec["items"][-1]
+        tokens = [self.cliente, self.login("laura@demo.goltime.co", gen.CLAVE_DEMO),
+                  self.login("julian@demo.goltime.co", gen.CLAVE_DEMO)]
+        body = {"cancha_id": r["cancha_id"], "franja_id": r["franja_id"], "fecha": r["fecha"],
+                "nombre_contacto": "Prueba", "celular": "3000000000", "correo_contacto": "prueba@correo.com"}
+        barrera, codigos = threading.Barrier(8), []
+
+        def intentar(i):
+            barrera.wait()
+            codigos.append(self.req("/reservas", tokens[i % 3], body))
+        hilos = [threading.Thread(target=intentar, args=(i,)) for i in range(8)]
+        for h in hilos:
+            h.start()
+        for h in hilos:
+            h.join()
+        estados = sorted(c for c, _ in codigos)
+        self.assertEqual(estados, [201] + [409] * 7, estados)
+        db = SessionLocal()
+        n = db.query(models.Reserva).filter(
+            models.Reserva.CanchaId == r["cancha_id"], models.Reserva.FranjaId == r["franja_id"],
+            models.Reserva.Fecha == date.fromisoformat(r["fecha"]), models.Reserva.Estado == "confirmada").count()
+        db.close()
+        self.assertEqual(n, 1)
 
     def test_reservar_recomendada_y_doble_reserva(self):
         st, rec = self.req("/ia/recomendaciones", self.cliente)

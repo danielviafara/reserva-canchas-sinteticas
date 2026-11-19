@@ -1,0 +1,28 @@
+Pruebas automaticas GolTime - 2026-11-18 23:08
+Comando: python -m unittest tests.test_ia -v
+
+test_csv (tests.test_ia.TestDataset.test_csv) ... ok
+test_perfiles_demo_tienen_historia (tests.test_ia.TestDataset.test_perfiles_demo_tienen_historia) ... ok
+test_sin_doble_reserva (tests.test_ia.TestDataset.test_sin_doble_reserva) ... ok
+test_volumen (tests.test_ia.TestDataset.test_volumen) ... ok
+test_cuatro_segmentos (tests.test_ia.TestModelos.test_cuatro_segmentos) ... ok
+test_hora_pico_aprendida (tests.test_ia.TestModelos.test_hora_pico_aprendida) ... ok
+test_modelo_cancelacion (tests.test_ia.TestModelos.test_modelo_cancelacion) ... ok
+test_combinacion_favorita (tests.test_ia.TestPatrones.test_combinacion_favorita) ... ok
+test_ocasional_sin_clasico (tests.test_ia.TestPatrones.test_ocasional_sin_clasico) ... ok
+test_recomendaciones_son_libres_y_futuras (tests.test_ia.TestPatrones.test_recomendaciones_son_libres_y_futuras) ... ok
+test_recomienda_su_clasico (tests.test_ia.TestPatrones.test_recomienda_su_clasico)
+Cada perfil con rutina recibe entre sus sugerencias una franja de su rutina. ... ok
+test_tipo_de_jugador (tests.test_ia.TestPatrones.test_tipo_de_jugador) ... ok
+test_concurrencia_misma_franja (tests.test_ia.TestZApi.test_concurrencia_misma_franja)
+8 peticiones simultaneas sobre la misma franja: exactamente una se confirma. ... ok
+test_endpoints_admin (tests.test_ia.TestZApi.test_endpoints_admin) ... ok
+test_endpoints_cliente (tests.test_ia.TestZApi.test_endpoints_cliente) ... ok
+test_perfiles_demo_pueden_entrar (tests.test_ia.TestZApi.test_perfiles_demo_pueden_entrar) ... ok
+test_reservar_recomendada_y_doble_reserva (tests.test_ia.TestZApi.test_reservar_recomendada_y_doble_reserva) ... ok
+test_rutas_admin_protegidas (tests.test_ia.TestZApi.test_rutas_admin_protegidas) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.219s
+
+OK
